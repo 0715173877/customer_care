@@ -4,10 +4,12 @@
 #  Kalton Investment Money Transfer Services
 #
 #  Usage:
-#    1. Copy project to your server (e.g. via SCP or git push)
-#    2. chmod +x deploy.sh
-#    3. sudo ./deploy.sh
+#    1. SSH into your server and clone the repo:
+#       git clone https://github.com/0715173877/customer_care.git /opt/customer_care
+#    2. cd /opt/customer_care
+#    3. chmod +x deploy.sh  &&  sudo ./deploy.sh
 #
+
 #  What it does:
 #    - Installs system dependencies (Python 3, PostgreSQL, nginx)
 #    - Creates a dedicated Linux user (customer_care)
@@ -38,7 +40,8 @@ err()   { echo -e "${RED}[ERROR]${NC} $*"; exit 1; }
 # ── Configuration — ADJUST THESE for your server ──────────────────────────
 PROJECT_DIR="/opt/customer_care"
 PROJECT_USER="customer_care"
-PROJECT_REPO=""                           # Leave empty when copying files manually
+PROJECT_REPO="https://github.com/0715173877/customer_care.git"
+
 DJANGO_SETTINGS_MODULE="customer_care.settings"
 DOMAIN="kaltoninvestment.co.tz"           # Change to your domain or server IP
 GUNICORN_WORKERS=4

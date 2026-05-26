@@ -109,7 +109,7 @@ All 18 SMS templates from `sample sms.txt` pass — **100% score**.
 
 ```bash
 # 1. Clone the project
-git clone <repo-url> customer_care
+git clone https://github.com/0715173877/customer_care.git
 cd customer_care
 
 # 2. Create virtual environment
@@ -122,7 +122,8 @@ pip install -r requirements.txt
 
 # 4. Configure database (PostgreSQL)
 #    Create a database and user, then copy `.env.example` to `.env` and edit:
-cp .env.example .env
+#    cp .env.example .env
+#    Set: DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT
 
 # 5. Run migrations
 python manage.py migrate
@@ -144,6 +145,7 @@ python manage.py runserver 0.0.0.0:8000
 
 ## Production Deployment (Ubuntu Server)
 
+
 The `deploy.sh` script fully automates deployment on a fresh Ubuntu 22.04+ server.
 
 ### Prerequisites
@@ -154,14 +156,14 @@ The `deploy.sh` script fully automates deployment on a fresh Ubuntu 22.04+ serve
 ### Step-by-Step
 
 ```bash
-# 1. Copy the project to your server
-scp -r /path/to/customer_care root@your-server:/opt/customer_care
-
-# 2. SSH into your server
+# 1. SSH into your server
 ssh root@your-server
 
-# 3. Make the script executable and run it
+# 2. Clone the repository
+git clone https://github.com/0715173877/customer_care.git /opt/customer_care
 cd /opt/customer_care
+
+# 3. Make the script executable and run it
 chmod +x deploy.sh
 sudo ./deploy.sh
 ```
@@ -180,6 +182,7 @@ sudo ./deploy.sh
 | 8 | Configures **Gunicorn** systemd service |
 | 9 | Configures **Nginx** reverse proxy |
 | 10 | Enables **UFW** firewall (SSH, HTTP, HTTPS) |
+
 
 ### After Deployment
 
