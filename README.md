@@ -103,15 +103,117 @@ SEND 200000 TZS FROM BANK 00922820111301 TO MOMO 0755123456 REF=Deposit_for_Kalt
 
 All 18 SMS templates from `sample sms.txt` pass — **100% score**.
 
-## Running
+---
+
+## Quick Start (Development)
 
 ```bash
+# 1. Clone the project
+git clone <repo-url> customer_care
+cd customer_care
+
+# 2. Create virtual environment
+python3 -m venv venv
+source venv/bin/activate   # Linux/macOS
+# venv\Scripts\activate    # Windows
+
+# 3. Install dependencies
+pip install -r requirements.txt
+
+# 4. Configure database (PostgreSQL)
+#    Create a database and user, then copy `.env.example` to `.env` and edit:
+cp .env.example .env
+
+# 5. Run migrations
+python manage.py migrate
+
+# 6. Create admin user
+python manage.py createsuperuser
+
+# 7. Start dev server
 python manage.py runserver 0.0.0.0:8000
 ```
 
-- **Intake SMS**: http://0.0.0.0:8000/payments/intake/
-- **Review queue**: http://0.0.0.0:8000/payments/review/
-- **Authorize**: http://0.0.0.0:8000/payments/authorize/
-- **History**: http://0.0.0.0:8000/payments/history/
-- **Admin**: http://0.0.0.0:8000/admin/ (login: `superuser` / `password123`)
-# customer_care
+- **Payments Intake**: http://127.0.0.1:8000/payments/intake/
+- **Payments Review**: http://127.0.0.1:8000/payments/review/
+- **Payments Authorize**: http://127.0.0.1:8000/payments/authorize/
+- **Payments History**: http://127.0.0.1:8000/payments/history/
+- **Admin Panel**: http://127.0.0.1:8000/admin/
+
+---
+
+## Production Deployment (Ubuntu Server)
+
+The `deploy.sh` script fully automates deployment on a fresh Ubuntu 22.04+ server.
+
+### Prerequisites
+
+- Ubuntu 22.04+ server with **root/sudo** access
+- Domain name pointing to your server's IP (or use IP directly)
+
+### Step-by-Step
+
+```bash
+# 1. Copy the project to your server
+scp -r /path/to/customer_care root@your-server:/opt/customer_care
+
+# 2. SSH into your server
+ssh root@your-server
+
+# 3. Make the script executable and run it
+cd /opt/customer_care
+chmod +x deploy.sh
+sudo ./deploy.sh
+```
+
+### What the Script Does
+
+| Step | Action |
+|------|--------|
+| 1 | Installs Python 3, PostgreSQL, Nginx, UFW firewall |
+| 2 | Creates `customer_care` system user |
+| 3 | Creates PostgreSQL database `customer_care_db` and user |
+| 4 | Sets up Python virtual environment & installs requirements |
+| 5 | Generates `.env` with secure `SECRET_KEY` and `DEBUG=False` |
+| 6 | Runs `collectstatic` and `migrate` |
+| 7 | Prompts for superuser creation |
+| 8 | Configures **Gunicorn** systemd service |
+| 9 | Configures **Nginx** reverse proxy |
+| 10 | Enables **UFW** firewall (SSH, HTTP, HTTPS) |
+
+### After Deployment
+
+```bash
+# 1. Configure AI and Twilio (edit .env with your keys)
+sudo nano /opt/customer_care/.env
+
+# 2. Set up HTTPS with Let's Encrypt
+sudo snap install core; sudo snap refresh core
+sudo snap install --classic certbot
+sudo certbot --nginx -d your-domain.com
+
+# 3. Log into the admin panel
+#    http://your-domain.com/admin/
+
+# Useful commands
+sudo journalctl -u gunicorn -f     # Watch gunicorn logs
+sudo tail -f /var/log/nginx/access.log
+sudo systemctl restart gunicorn    # Restart after code changes
+sudo systemctl restart nginx       # Restart after nginx config changes
+```
+
+### Architecture
+
+```
+Internet → Nginx (port 80/443)
+                │
+                ▼
+         Gunicorn (port 8000)
+                │
+                ▼
+           Django App
+                │
+                ▼
+          PostgreSQL (port 5432)
+```
+
