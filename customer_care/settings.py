@@ -12,7 +12,7 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-)r2r-91^%lpj)7@dgh#*h
 
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*', 'localhost', '31.220.75.145']
 
 INSTALLED_APPS = [
     'django.contrib.admin',

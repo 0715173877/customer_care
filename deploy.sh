@@ -43,9 +43,9 @@ PROJECT_USER="customer_care"
 PROJECT_REPO="https://github.com/0715173877/customer_care.git"
 
 DJANGO_SETTINGS_MODULE="customer_care.settings"
-DOMAIN="kaltoninvestment.co.tz"           # Change to your domain or server IP
+DOMAIN="31.220.75.145"           # Change to your domain or server IP
 GUNICORN_WORKERS=4
-GUNICORN_PORT=8000
+GUNICORN_PORT=3006
 
 # PostgreSQL
 DB_NAME="customer_care_db"
@@ -224,7 +224,7 @@ info "Configuring nginx..."
 
 cat > /etc/nginx/sites-available/customer_care <<NGINX
 server {
-    listen 80;
+    listen 8006;
     server_name $DOMAIN;
 
     location /static/ {
