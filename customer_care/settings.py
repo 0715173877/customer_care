@@ -90,12 +90,17 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 # CSRF / Security settings for production (DEBUG=False)
-# CSRF_TRUSTED_ORIGINS = [
-#     'https://kaltoninvestment.co.tz',
-#     'http://kaltoninvestment.co.tz',
-# ]
-# CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=False, cast=bool)
-# SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=False, cast=bool)
+# Add all domains/IPs where users will access the site.
+# The deployed server may be reached via IP:port before DNS is set up.
+CSRF_TRUSTED_ORIGINS = [
+    'https://kaltoninvestment.co.tz',
+    'http://kaltoninvestment.co.tz',
+    'http://31.220.75.145:8006',
+    'http://31.220.75.145:8000',
+]
+CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=False, cast=bool)
+SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=False, cast=bool)
+
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
