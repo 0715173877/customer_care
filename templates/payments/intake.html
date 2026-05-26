@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}SMS Intake{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <div class="flex items-center mb-6">
+        <a href="{% url 'payments:dashboard' %}" class="text-gray-500 hover:text-gray-700 mr-3">← Back</a>
+        <h1 class="text-2xl font-bold text-gray-800">📥 SMS Payment Intake</h1>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <form method="POST" id="intake-form">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label class="block text-gray-700 font-medium mb-2" for="sms_text">
+                    Paste SMS Text or type payment instructions:
+                </label>
+                <textarea
+                    name="sms_text"
+                    id="sms_text"
+                    rows="5"
+                    class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Paste SMS here... e.g.&#10;Hawa Mkombozi bank... or&#10;SEND 200000 TZS FROM BANK 00922820111301 TO MOMO 0755123456 REF=Deposit_for_Kalton"
+                    required>{{ request.POST.sms_text|default:'' }}</textarea>
+            </div>
+
+            <div class="flex space-x-3">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium">
+                    🔍 Parse SMS
+                </button>
+                <button type="reset" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-lg">
+                    Clear
+                </button>
+            </div>
+        </form>
+    </div>
+
+    {% if parsed %}
+    <!-- Parsed Result -->
+    <div class="mt-6 bg-white rounded-lg shadow-md p-6 border-t-4 
+        {% if parsed.parse_confidence and parsed.parse_confidence >= 0.7 %}border-green-500
+        {% elif parsed.parse_confidence and parsed.parse_confidence >= 0.4 %}border-yellow-500
+        {% else %}border-red-500{% endif %}">
+
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-bold">📊 Parsed Result</h2>
+            <span class="px-3 py-1 rounded-full text-sm font-medium
+                {% if parsed.parse_confidence and parsed.parse_confidence >= 0.7 %}bg-green-100 text-green-700
+                {% elif parsed.parse_confidence and parsed.parse_confidence >= 0.4 %}bg-yellow-100 text-yellow-700
+                {% else %}bg-red-100 text-red-700{% endif %}">
+                Confidence: {{ parsed.parse_confidence|floatformat:2 }}
+            </span>
+        </div>
+
+        {% if parsed.parse_notes %}
+        <div class="bg-blue-50 border border-blue-200 rounded p-3 mb-4 text-sm text-blue-700">
+            ℹ️ {{ parsed.parse_notes }}
+        </div>
+        {% endif %}
+
+        <div class="grid grid-cols-2 gap-4 text-sm">
+            <div class="space-y-2">
+                <div class="bg-gray-50 rounded p-2">
+                    <span class="text-gray-500">💰 Amount:</span>
+                    <span class="font-medium ml-2">
+                        {% if parsed.amount %}{{ parsed.amount|floatformat:-2 }}{% else %}<span class="text-red-500">Not detected</span>{% endif %}
+                    </span>
+                </div>
+                <div class="bg-gray-50 rounded p-2">
+                    <span class="text-gray-500">💱 Currency:</span>
+                    <span class="font-medium ml-2">{{ parsed.currency|default:'Not detected' }}</span>
+                </div>
+                <div class="bg-gray-50 rounded p-2">
+                    <span class="text-gray-500">👤 Sender:</span>
+                    <span class="font-medium ml-2">{{ parsed.sender_name|default:'Not detected' }}</span>
+                </div>
+                <div class="bg-gray-50 rounded p-2">
+                    <span class="text-gray-500">📤 From Account:</span>
+                    <span class="font-medium ml-2">{{ parsed.from_account_type|default:'' }} {{ parsed.from_account|default:'Not detected' }}</span>
+                </div>
+                <div class="bg-gray-50 rounded p-2">
+                    <span class="text-gray-500">🏦 From Bank:</span>
+                    <span class="font-medium ml-2">{{ parsed.from_bank|default:'Not detected' }}</span>
+                </div>
+            </div>
+            <div class="space-y-2">
+                <div class="bg-gray-50 rounded p-2">
+                    <span class="text-gray-500">👤 Receiver:</span>
+                    <span class="font-medium ml-2">{{ parsed.receiver_name|default:'Not detected' }}</span>
+                </div>
+                <div class="bg-gray-50 rounded p-2">
+                    <span class="text-gray-500">📥 To Account:</span>
+                    <span class="font-medium ml-2">{{ parsed.to_account_type|default:'' }} {{ parsed.to_account|default:'Not detected' }}</span>
+                </div>
+                <div class="bg-gray-50 rounded p-2">
+                    <span class="text-gray-500">🏦 To Bank:</span>
+                    <span class="font-medium ml-2">{{ parsed.to_bank|default:'Not detected' }}</span>
+                </div>
+                <div class="bg-gray-50 rounded p-2">
+                    <span class="text-gray-500">🔖 Reference:</span>
+                    <span class="font-medium ml-2">{{ parsed.reference|default:'Not detected' }}</span>
+                </div>
+                <div class="bg-gray-50 rounded p-2">
+                    <span class="text-gray-500">📝 Memo:</span>
+                    <span class="font-medium ml-2">{{ parsed.memo|default:'Not detected' }}</span>
+                </div>
+            </div>
+        </div>
+
+        {% if parsed.transaction_date %}
+        <div class="mt-2 bg-gray-50 rounded p-2 text-sm">
+            <span class="text-gray-500">📅 Transaction Date:</span>
+            <span class="font-medium ml-2">{{ parsed.transaction_date }}</span>
+        </div>
+        {% endif %}
+
+        <!-- Confirm or Edit -->
+        <form method="POST" class="mt-6 border-t pt-4">
+            {% csrf_token %}
+            <input type="hidden" name="sms_text" value="{{ request.POST.sms_text }}">
+            <input type="hidden" name="confirm" value="yes">
+
+            <p class="text-gray-600 mb-3">Does this look correct? Confirm to create a payment request.</p>
+            <div class="flex space-x-3">
+                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium">
+                    ✅ Confirm & Send for Review
+                </button>
+                <button type="button" onclick="document.getElementById('sms_text').focus(); window.scrollTo(0,0);" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-lg">
+                    ✏️ Edit SMS Text
+                </button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

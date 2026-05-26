@@ -1,0 +1,249 @@
+{% extends 'base.html' %}
+{% block title %}Chat Widget - Customer Care{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+        <!-- Chat Header -->
+        <div class="bg-blue-600 text-white px-6 py-4">
+            <h2 class="text-xl font-semibold">🇹🇿 Kalton Investment Chat</h2>
+            <p class="text-blue-200 text-sm">Money Transfer Services - AI Assistant</p>
+        </div>
+
+        <!-- Chat Messages -->
+        <div id="chat-messages" class="h-96 overflow-y-auto p-6 space-y-4 bg-gray-50">
+            <div class="flex items-start space-x-3">
+                <div class="bg-blue-100 text-blue-800 rounded-lg px-4 py-2 max-w-md">
+                    <p class="text-sm">👋 Hello! Welcome to Kalton Investment Money Transfer Services. How can I help you today?</p>
+                    <p class="text-xs text-blue-500 mt-1">I can help with sending money, tracking transfers, exchange rates, fees, and more!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Language Indicator Bar -->
+        <div class="border-t border-gray-100 px-6 py-2 bg-gray-50 flex items-center justify-between">
+            <div class="flex items-center space-x-2 text-sm text-gray-500">
+                <span>🌐</span>
+                <span id="language-indicator">🇬🇧 English</span>
+            </div>
+            <p class="text-xs text-gray-400">I speak English & <span class="font-medium">Kiswahili</span></p>
+        </div>
+        <!-- Chat Input -->
+        <div class="border-t border-gray-200 px-6 py-4 bg-white">
+            <form id="chat-form" class="flex space-x-3">
+                <input type="text" id="message-input" 
+                       class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                       placeholder="Andika ujumbe wako..." required>
+                <button type="submit" 
+                        class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
+                    Send
+                </button>
+                <button type="button" id="reset-btn"
+                        class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 focus:outline-none transition-colors text-sm">
+                    Reset
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Quick Actions Title -->
+    <div class="mt-6">
+        <h3 class="text-sm font-medium text-gray-500 mb-2">Quick Actions / <span class="text-gray-400">Vitendo vya Haraka</span></h3>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+        <button class="quick-action bg-white p-4 rounded-lg shadow hover:shadow-md transition-shadow text-center" data-message="I want to send money to Tanzania">
+            <span class="text-2xl">💸</span>
+            <p class="text-sm mt-1 text-gray-600">Send Money</p>
+            <p class="text-xs text-gray-400">Tuma Pesa</p>
+        </button>
+        <button class="quick-action bg-white p-4 rounded-lg shadow hover:shadow-md transition-shadow text-center" data-message="Track my transfer">
+            <span class="text-2xl">📦</span>
+            <p class="text-sm mt-1 text-gray-600">Track Transfer</p>
+            <p class="text-xs text-gray-400">Fuatilia Uhamisho</p>
+        </button>
+        <button class="quick-action bg-white p-4 rounded-lg shadow hover:shadow-md transition-shadow text-center" data-message="What are your exchange rates?">
+            <span class="text-2xl">💰</span>
+            <p class="text-sm mt-1 text-gray-600">Exchange Rates</p>
+            <p class="text-xs text-gray-400">Bei za Fedha</p>
+        </button>
+        <button class="quick-action bg-white p-4 rounded-lg shadow hover:shadow-md transition-shadow text-center" data-message="What are your transfer fees?">
+            <span class="text-2xl">📊</span>
+            <p class="text-sm mt-1 text-gray-600">Transfer Fees</p>
+            <p class="text-xs text-gray-400">Ada za Uhamisho</p>
+        </button>
+    </div>
+    <!-- Swahili Quick Actions -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <button class="quick-action bg-green-50 p-4 rounded-lg shadow hover:shadow-md transition-shadow text-center border border-green-100" data-message="Nataka kutuma pesa Tanzania">
+            <span class="text-2xl">🇹🇿</span>
+            <p class="text-sm mt-1 text-green-700 font-medium">Tuma Pesa</p>
+            <p class="text-xs text-green-500">Kiswahili</p>
+        </button>
+        <button class="quick-action bg-green-50 p-4 rounded-lg shadow hover:shadow-md transition-shadow text-center border border-green-100" data-message="Fuatilia uhamisho wangu">
+            <span class="text-2xl">🔍</span>
+            <p class="text-sm mt-1 text-green-700 font-medium">Fuatilia</p>
+            <p class="text-xs text-green-500">Kiswahili</p>
+        </button>
+        <button class="quick-action bg-green-50 p-4 rounded-lg shadow hover:shadow-md transition-shadow text-center border border-green-100" data-message="Bei za ubadilishaji fedha ni gani?">
+            <span class="text-2xl">🏦</span>
+            <p class="text-sm mt-1 text-green-700 font-medium">Bei za Fedha</p>
+            <p class="text-xs text-green-500">Kiswahili</p>
+        </button>
+        <button class="quick-action bg-green-50 p-4 rounded-lg shadow hover:shadow-md transition-shadow text-center border border-green-100" data-message="Ada za uhamisho ni kiasi gani?">
+            <span class="text-2xl">💵</span>
+            <p class="text-sm mt-1 text-green-700 font-medium">Ada za Uhamisho</p>
+            <p class="text-xs text-green-500">Kiswahili</p>
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    let sessionId = localStorage.getItem('chat_session_id');
+    if (!sessionId) {
+        sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('chat_session_id', sessionId);
+    }
+
+    const chatMessages = document.getElementById('chat-messages');
+    const chatForm = document.getElementById('chat-form');
+    const messageInput = document.getElementById('message-input');
+    const resetBtn = document.getElementById('reset-btn');
+
+    function addMessage(role, content, language) {
+        const div = document.createElement('div');
+        div.className = 'flex items-start space-x-3 ' + (role === 'user' ? 'justify-end' : '');
+        
+        const bubble = document.createElement('div');
+        bubble.className = role === 'user' 
+            ? 'bg-blue-600 text-white rounded-lg px-4 py-2 max-w-md'
+            : 'bg-blue-100 text-blue-800 rounded-lg px-4 py-2 max-w-md';
+        
+        let langBadge = '';
+        if (role === 'bot' && language === 'sw') {
+            langBadge = '<span class="inline-flex items-center text-xs text-blue-500 mt-1"><span class="mr-1">🇹🇿</span> Kiswahili</span>';
+        } else if (role === 'bot' && language === 'en') {
+            langBadge = '<span class="inline-flex items-center text-xs text-blue-400 mt-1"><span class="mr-1">🇬🇧</span> English</span>';
+        }
+        
+        bubble.innerHTML = `<p class="text-sm">${content}</p>` + langBadge;
+        div.appendChild(bubble);
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function updateLanguageIndicator(language) {
+        const indicator = document.getElementById('language-indicator');
+        if (indicator) {
+            indicator.textContent = language === 'sw' ? '🇹🇿 Kiswahili' : '🇬🇧 English';
+        }
+    }
+
+    function addTypingIndicator() {
+        const div = document.createElement('div');
+        div.id = 'typing-indicator';
+        div.className = 'flex items-start space-x-3';
+        div.innerHTML = `
+            <div class="bg-gray-200 text-gray-600 rounded-lg px-4 py-2">
+                <p class="text-sm">🤖 Thinking<span class="animate-pulse">...</span></p>
+            </div>
+        `;
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function removeTypingIndicator() {
+        const indicator = document.getElementById('typing-indicator');
+        if (indicator) indicator.remove();
+    }
+
+    async function sendMessage(message) {
+        addMessage('user', message);
+        addTypingIndicator();
+
+        try {
+            const response = await fetch('/chat/api/message/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+                body: JSON.stringify({
+                    message: message,
+                    session_id: sessionId,
+                }),
+            });
+
+            const data = await response.json();
+            removeTypingIndicator();
+
+            if (data.response) {
+                updateLanguageIndicator(data.language);
+                addMessage('bot', data.response, data.language);
+            } else if (data.error) {
+                addMessage('bot', 'Sorry, I encountered an error: ' + data.error);
+            } else {
+                addMessage('bot', 'Sorry, I encountered an error. Please try again.');
+            }
+        } catch (error) {
+            removeTypingIndicator();
+            addMessage('bot', 'Sorry, there was a network error. Please check your connection.');
+        }
+    }
+
+    chatForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const message = messageInput.value.trim();
+        if (!message) return;
+        
+        messageInput.value = '';
+        messageInput.disabled = true;
+        
+        await sendMessage(message);
+        
+        messageInput.disabled = false;
+        messageInput.focus();
+    });
+
+    resetBtn.addEventListener('click', async () => {
+        try {
+            await fetch('/chat/api/reset/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+                body: JSON.stringify({ session_id: sessionId }),
+            });
+        } catch (e) {}
+        
+        sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('chat_session_id', sessionId);
+        chatMessages.innerHTML = `
+            <div class="flex items-start space-x-3">
+                <div class="bg-blue-100 text-blue-800 rounded-lg px-4 py-2 max-w-md">
+                    <p class="text-sm">👋 Hello! Welcome to Kalton Investment Money Transfer Services. How can I help you today?</p>
+                    <p class="text-xs text-blue-500 mt-1">I can help with sending money, tracking transfers, exchange rates, fees, and more!</p>
+                </div>
+            </div>
+        `;
+    });
+
+    // Quick action buttons
+    document.querySelectorAll('.quick-action').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const message = btn.dataset.message;
+            messageInput.value = message;
+            chatForm.dispatchEvent(new Event('submit'));
+        });
+    });
+
+    // Allow Enter key to send
+    messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            chatForm.dispatchEvent(new Event('submit'));
+        }
+    });
+</script>
+{% endblock %}

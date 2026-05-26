@@ -1,0 +1,132 @@
+╔══════════════════════════════════════════════════════════════════╗
+║  SMS PARSER — EXACT FORMATS THAT WILL PASS (Copy & Paste)      ║
+║  → Go to /payments/intake/ and paste to test                    ║
+╚══════════════════════════════════════════════════════════════════╝
+
+
+======================================================================
+ SECTION 1: STANDARD COMMAND FORMAT (Confidence: 95%)
+======================================================================
+ Use these for manually sending payment instructions.
+
+ EXACT RULES:
+   • Must start with "SEND" or "TRANSFER" (case-insensitive)
+   • Amount can be plain (200000) or with commas (50,000)
+   • Currency can be: TZS, USD, EUR, GBP, KES, UGX, RWF, BIF
+   • From/To types: BANK, MOMO, or INTL
+   • REF is optional — use REF= or REF:
+
+──── Template ──────────────────────────────────────────────────────
+ SEND <AMOUNT> <CURRENCY> FROM <TYPE> <ACCOUNT> TO <TYPE> <ACCOUNT> REF=<REFERENCE>
+ TRANSFER AMOUNT=<AMOUNT> <CURRENCY> FROM <TYPE> <ACCOUNT> TO <TYPE> <ACCOUNT>
+
+────────────────────────────────────────────────────────────────────
+
+  ✓ #1  BANK → MOMO (with REF=)
+     SEND 200000 TZS FROM BANK 00922820111301 TO MOMO 0755123456 REF=Deposit_for_Kalton
+
+  ✓ #2  MOMO → BANK (with REF=)
+     SEND 50000 TZS FROM MOMO 0712345678 TO BANK 032175003282 REF=Ulete_na_kalton
+
+  ✓ #3  BANK → BANK (TRANSFER format, no REF)
+     TRANSFER AMOUNT=4990000 TZS FROM BANK 52810027160 TO BANK 00922820111301
+
+  ✓ #4  INTL → BANK (USD)
+     SEND 100 USD FROM INTL GB12MIDL402234 TO BANK 01J7****200 REF=Western_Union_123
+
+  ✓ #5  MOMO → MOMO (with REF)
+     SEND 30000 TZS FROM MOMO 0688123456 TO MOMO 0788987654 REF=chakula
+
+  ✓ #6  With comma in amount
+     SEND 1,500,000 TZS FROM BANK 00922820111301 TO MOMO 0712345678 REF=Rent_payment
+
+  ✓ #7  REF with colon (REF:) instead of REF=
+     SEND 45000 TZS FROM MOMO 0688123456 TO BANK 032175003282 REF:School_fees
+
+  ✓ #8  Lowercase (still works)
+     send 100000 tzs from bank 00922820111301 to momo 0755123456 ref=airtime
+
+  ✓ #9  SEND without any REF
+     SEND 25000 TZS FROM BANK 00922820111301 TO MOMO 0755123456
+
+  ✓ #10 EUR currency
+     SEND 500 EUR FROM INTL DE89370400440532013000 TO BANK 00922820111301 REF=Invoice_2024
+
+
+======================================================================
+ SECTION 2: BANK NOTIFICATION FORMATS (Confidence: 80%)
+======================================================================
+ These are real SMS templates from Tanzanian banks.
+ Just paste exactly as-is.
+
+──── #2a: Mkombozi Bank ────────────────────────────────────────────
+ EXACT pattern: Hawa Mkombozi bank Ndugu <NAME> umefanikiwa kuweka
+                TZS <AMOUNT> AC <ACCOUNT> Maelezo: <MEMO>
+                Tarehe <DATE> REF. <REF>
+
+ ✓
+ Hawa Mkombozi bank Ndugu KALTON umefanikiwa kuweka TZS 200000 AC 00922820111301 Maelezo: DEPOSIT Tarehe 23 Apr 2026 REF. AB1776938073546. Asante kwa kutumia benki ya Mkombozi
+
+──── #2b: NBC Bank ─────────────────────────────────────────────────
+ EXACT pattern: Hawa NBC Muamala umekamilika
+                Jina la muwekaji- <NAME>
+                Namba ya akaunti- <ACCOUNT>
+                Kiasi- TSh <AMOUNT>
+                Trh- <DATE>
+                Kumb no- <REF>
+
+ ✓
+ Hawa NBC Muamala umekamilika Jina la muwekaji- kalton Namba ya akaunti- 032175003282 Kiasi- TSh 500000 Trh- 02/05/2026 Kumb no- 612210072276
+
+──── #2c: NMB Bank ─────────────────────────────────────────────────
+ EXACT pattern: Hawa NMB <REF> confirmed you have successfully
+                deposited TZS. <AMOUNT> to account number <ACCOUNT>
+
+ ✓
+ Hawa NMB EC103050514970 confirmed you have successfully deposited TZS. 4990000 to account number 52810027160. Thank for banking with us.
+
+──── #2d: CRDB Bank ────────────────────────────────────────────────
+ EXACT pattern: Hawa ni CRDB Dear Customer, you have received
+                <CURRENCY><AMOUNT> in your account number: <ACCOUNT>
+                <DATETIME> REF:<REF>
+
+ ✓
+ Hawa ni CRDB Dear Customer, you have received TZS50,000.00 in your account number: 01J7****200 2026-05-02T10:40 REF:FT2612204R14 . For queries call 0755197700
+
+──── #2e: Mwanga Hakika Bank ──────────────────────────────────────
+ EXACT pattern: Hawa ni Mwanga Hakika bank
+                TZS <AMOUNT> Imewekwa kwenye akaunti <ACCOUNT>
+                Tarehe <DATE>
+                Piga <NUMBER> <NUMBER> ikiwa huutambui
+
+ ✓
+ Hawa ni Mwanga Hakika bank TZS 28,000 Imewekwa kwenye akaunti 211008XXXXX13. Tarehe 01-May-2026. Piga 0800 750 421 ikiwa huutambui muamala huu. MHB Bank
+
+──── #2f: Azania Bank ──────────────────────────────────────────────
+ EXACT pattern: Hawa ni Azania bank
+                Ndugu <NAME>, Kiasi cha TZS <AMOUNT> Kimewekwa
+                kwenye Akaunti yako inayoishia <ACCOUNT>
+                kutoka kwa <SENDER> Akaunti inayoishia <SENDER_ACCT>
+                kumb;<REF>
+
+ ✓
+ Hawa ni Azania bank Ndugu Wakala, Kiasi cha TZS 50,000 Kimewekwa kwenye Akaunti yako inayoishia 3222 kutoka kwa JOHN JOSEPH DEUS Akaunti inayoishia 3821 kumb;018DAWM261220306, tar 5/2/2026 12:37:27 PM Kama hutambui mwamala huu piga bure 0800-110210. Azania Benki inayozidi matarajio
+
+
+======================================================================
+ SECTION 3: FALLBACK (Confidence: 10%)
+======================================================================
+ If the SMS doesn't match any format above, the parser still tries
+ to extract: amount (any number), currency (TZS, USD, etc.), and
+ reference (REF=, REF:, REF. or "Kumb no-").
+
+ ✓ Fallback
+     Some random message with TZS 50000 and REF=ABC123456
+
+
+======================================================================
+ QUICK TEST: Copy this entire block and paste into /payments/intake/
+======================================================================
+
+ SEND 200000 TZS FROM BANK 00922820111301 TO MOMO 0755123456 REF=Deposit_for_Kalton
+ Hawa Mkombozi bank Ndugu KALTON umefanikiwa kuweka TZS 200000 AC 00922820111301 Maelezo: DEPOSIT Tarehe 23 Apr 2026 REF. AB1776938073546. Asante kwa kutumia benki ya Mkombozi

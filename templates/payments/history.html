@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Payment History{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto">
+    <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center">
+            <a href="{% url 'payments:dashboard' %}" class="text-gray-500 hover:text-gray-700 mr-3">← Dashboard</a>
+            <h1 class="text-2xl font-bold text-gray-800">📋 Payment History</h1>
+        </div>
+    </div>
+
+    <!-- Filter -->
+    <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+        <div class="flex space-x-2">
+            <a href="{% url 'payments:history' %}" class="px-3 py-1.5 rounded text-sm {% if not current_filter %}bg-blue-600 text-white{% else %}bg-gray-200 text-gray-700{% endif %}">
+                All
+            </a>
+            <a href="{% url 'payments:history' %}?status=authorized" class="px-3 py-1.5 rounded text-sm {% if current_filter == 'authorized' %}bg-green-600 text-white{% else %}bg-gray-200 text-gray-700{% endif %}">
+                ✅ Authorized
+            </a>
+            <a href="{% url 'payments:history' %}?status=rejected" class="px-3 py-1.5 rounded text-sm {% if current_filter == 'rejected' %}bg-red-600 text-white{% else %}bg-gray-200 text-gray-700{% endif %}">
+                🚫 Rejected
+            </a>
+            <a href="{% url 'payments:history' %}?status=failed" class="px-3 py-1.5 rounded text-sm {% if current_filter == 'failed' %}bg-red-600 text-white{% else %}bg-gray-200 text-gray-700{% endif %}">
+                ❌ Failed
+            </a>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <table class="w-full text-sm">
+            <thead class="bg-gray-50 text-gray-600">
+                <tr>
+                    <th class="text-left px-4 py-3 font-medium">Date</th>
+                    <th class="text-left px-4 py-3 font-medium">Amount</th>
+                    <th class="text-left px-4 py-3 font-medium">From</th>
+                    <th class="text-left px-4 py-3 font-medium">To</th>
+                    <th class="text-left px-4 py-3 font-medium">Reference</th>
+                    <th class="text-left px-4 py-3 font-medium">Status</th>
+                    <th class="text-left px-4 py-3 font-medium">By</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                {% for p in payments %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-3 text-gray-500">{{ p.created_at|date:"Y-m-d H:i" }}</td>
+                    <td class="px-4 py-3 font-medium">{{ p.amount|floatformat:-2 }} {{ p.currency }}</td>
+                    <td class="px-4 py-3">
+                        {% if p.from_account %}
+                        <span class="text-xs bg-gray-100 px-1.5 py-0.5 rounded">{{ p.from_account_type }}</span>
+                        {{ p.from_account|truncatechars:15 }}
+                        {% else %}-{% endif %}
+                    </td>
+                    <td class="px-4 py-3">
+                        {% if p.to_account %}
+                        <span class="text-xs bg-gray-100 px-1.5 py-0.5 rounded">{{ p.to_account_type }}</span>
+                        {{ p.to_account|truncatechars:15 }}
+                        {% else %}-{% endif %}
+                    </td>
+                    <td class="px-4 py-3 text-gray-500">{{ p.reference|default:'-'|truncatechars:20 }}</td>
+                    <td class="px-4 py-3">
+                        {% if p.status == 'authorized' %}
+                        <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-medium">✅ Authorized</span>
+                        {% elif p.status == 'rejected' %}
+                        <span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs font-medium">🚫 Rejected</span>
+                        {% elif p.status == 'failed' %}
+                        <span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs font-medium">❌ Failed</span>
+                        {% else %}
+                        <span class="bg-gray-100 text-gray-700 px-2 py-0.5 rounded-full text-xs font-medium">{{ p.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-4 py-3 text-gray-500">
+                        {% if p.authorized_by %}{{ p.authorized_by }}{% elif p.reviewed_by %}{{ p.reviewed_by }}{% else %}-{% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="px-4 py-8 text-center text-gray-500">No completed payments yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}Chat Dashboard - Customer Care{% endblock %}
+{% block content %}
+<div class="space-y-6">
+    <h2 class="text-2xl font-bold text-gray-800">💬 Chat Conversations Dashboard</h2>
+    
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="text-3xl font-bold text-blue-600">{{ total_conversations }}</div>
+            <div class="text-gray-600">Total Conversations</div>
+        </div>
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="text-3xl font-bold text-green-600">{{ active_conversations }}</div>
+            <div class="text-gray-600">Active</div>
+        </div>
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="text-3xl font-bold text-purple-600">{{ knowledge_base_entries }}</div>
+            <div class="text-gray-600">KB Entries</div>
+        </div>
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="text-3xl font-bold text-yellow-600">{{ recent_conversations|length }}</div>
+            <div class="text-gray-600">Recent Conversations</div>
+        </div>
+    </div>
+
+    <!-- Recent Conversations -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-800">Recent Conversations</h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Session</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">User</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Intents</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Messages</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for conv in recent_conversations %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 text-sm text-gray-900 font-mono">{{ conv.session_id|truncatechars:20 }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-900">{{ conv.user_identifier|default:"Anonymous" }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-500">{{ conv.intent_history|join:", "|default:"-"|truncatechars:30 }}</td>
+                        <td class="px-6 py-4 text-sm">
+                            {% if conv.is_active %}
+                                <span class="px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">Active</span>
+                            {% else %}
+                                <span class="px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800">Closed</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-500">{{ conv.messages.count }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-500">{{ conv.created_at|date:"M d, H:i" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="px-6 py-8 text-center text-gray-500">No conversations yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
