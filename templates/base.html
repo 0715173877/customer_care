@@ -25,10 +25,36 @@
                         <a href="{% url 'payments:dashboard' %}" class="hover:bg-blue-700 px-3 py-2 rounded {% if request.resolver_match.app_name == 'payments' %}bg-blue-700{% endif %}">
                             💳 Payments
                         </a>
+                        <a href="{% url 'calls:dashboard' %}" class="hover:bg-blue-700 px-3 py-2 rounded {% if request.resolver_match.app_name == 'calls' %}bg-blue-700{% endif %}">
+                            📞 Calls
+                        </a>
+                        <a href="{% url 'sms_app:dashboard' %}" class="hover:bg-blue-700 px-3 py-2 rounded {% if request.resolver_match.app_name == 'sms_app' %}bg-blue-700{% endif %}">
+                            💬 SMS
+                        </a>
+                        <a href="{% url 'chatbot:dashboard' %}" class="hover:bg-blue-700 px-3 py-2 rounded {% if request.resolver_match.app_name == 'chatbot' %}bg-blue-700{% endif %}">
+                            🤖 Chatbot
+                        </a>
                         <a href="{% url 'admin:index' %}" class="hover:bg-blue-700 px-3 py-2 rounded">
                             ⚙️ Admin
                         </a>
                     </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    {% if user.is_authenticated %}
+                    <span class="text-sm text-blue-200">
+                        👤 {{ user.username }}
+                    </span>
+                    <form method="post" action="{% url 'logout' %}" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="hover:bg-blue-700 px-3 py-2 rounded text-sm">
+                            🚪 Logout
+                        </button>
+                    </form>
+                    {% else %}
+                    <a href="{% url 'login' %}?next={{ request.path }}" class="hover:bg-blue-700 px-3 py-2 rounded text-sm">
+                        🔐 Login
+                    </a>
+                    {% endif %}
                 </div>
             </div>
         </div>

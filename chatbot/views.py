@@ -6,12 +6,14 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from .engine import engine
 from .models import Conversation, Message, KnowledgeBase
 
 logger = logging.getLogger(__name__)
 
 
+@login_required
 def dashboard(request):
     """Chatbot dashboard view."""
     recent_conversations = Conversation.objects.filter(is_active=True)[:10]

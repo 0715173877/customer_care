@@ -6,12 +6,14 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import render
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from .models import CallLog, CallMenuOption
 from chatbot.engine import engine
 
 logger = logging.getLogger(__name__)
 
 
+@login_required
 def call_dashboard(request):
     """Dashboard view for call management."""
     recent_calls = CallLog.objects.all()[:20]

@@ -5,12 +5,14 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import render
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from .models import SMSMessage, SMSAutoReply
 from chatbot.engine import engine
 
 logger = logging.getLogger(__name__)
 
 
+@login_required
 def sms_dashboard(request):
     """Dashboard view for SMS management."""
     recent_messages = SMSMessage.objects.all()[:20]
