@@ -4,12 +4,13 @@ Django settings for customer_care project.
 
 from pathlib import Path
 import os
+from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-)r2r-91^%lpj)7@dgh#*h=mg%03#=17mw!#7k(no=a%-l-@5i-'
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-)r2r-91^%lpj)7@dgh#*h=mg%03#=17mw!#7k(no=a%-l-@5i-')
 
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = ['*']
 
@@ -58,8 +59,12 @@ WSGI_APPLICATION = 'customer_care.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': config('DB_ENGINE', default='django.db.backends.postgresql'),
+        'NAME': config('DB_NAME', default='customer_care_db'),
+        'USER': config('DB_USER', default='customer_care_user'),
+        'PASSWORD': config('DB_PASSWORD', default='care_pass_2026'),
+        'HOST': config('DB_HOST', default='127.0.0.1'),
+        'PORT': config('DB_PORT', default='5432'),
     }
 }
 
@@ -80,10 +85,10 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Google Gemini AI Configuration (set GEMINI_API_KEY in environment for AI-powered responses)
-GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
+# Google Gemini AI Configuration (set GEMINI_API_KEY in .env for AI-powered responses)
+GEMINI_API_KEY = config('GEMINI_API_KEY', default='')
 
-# Twilio Configuration (set these in production via environment variables)
-TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID', 'your_account_sid')
-TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN', 'your_auth_token')
-TWILIO_PHONE_NUMBER = os.environ.get('TWILIO_PHONE_NUMBER', '+1234567890')
+# Twilio Configuration (set these in .env for production)
+TWILIO_ACCOUNT_SID = config('TWILIO_ACCOUNT_SID', default='')
+TWILIO_AUTH_TOKEN = config('TWILIO_AUTH_TOKEN', default='')
+TWILIO_PHONE_NUMBER = config('TWILIO_PHONE_NUMBER', default='')
