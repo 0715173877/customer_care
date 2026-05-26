@@ -152,7 +152,12 @@ GEMINI_API_KEY=
 TWILIO_ACCOUNT_SID=
 TWILIO_AUTH_TOKEN=
 TWILIO_PHONE_NUMBER=
+
+# CSRF cookies — set to True once HTTPS is configured
+CSRF_COOKIE_SECURE=False
+SESSION_COOKIE_SECURE=False
 EOF
+
     chown "$PROJECT_USER":"$PROJECT_USER" .env
     chmod 600 .env
     ok "Created .env with secure SECRET_KEY (DEBUG=False)"
